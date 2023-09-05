@@ -56,9 +56,8 @@ const addConfiguration = () => {
 }
 
 const detectDisplay = () => {
-    chrome.system.display.getInfo((displayInfo) => {
-        document.getElementById("newResolution").value = displayInfo[0].bounds.width + "x" + displayInfo[0].bounds.height;
-    });
+    const { screen: { height, width } } = window;
+    document.getElementById("newResolution").value = width + "x" + height;
 }
 
 contentLoadConfigurations();

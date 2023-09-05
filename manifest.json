@@ -5,6 +5,12 @@
     "background": {
         "service_worker": "service-worker.js"
     },
+    "content_scripts": [
+        {
+          "matches": ["<all_urls>"],
+          "js": ["content-script.js"]
+        }
+      ],
     "permissions": [
         "declarativeNetRequest",
         "system.display",

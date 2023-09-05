@@ -12,6 +12,8 @@ const saveConfigurations = (configs) => {
 
 let resUAMap = new Map();
 
+let currentDisplay = { height: 0, width: 0 }
+
 let rules_template = [
     {
         id: 1,
@@ -46,26 +48,33 @@ const getUserAgent = (width, height) => {
     } else {
         return "Default";
     }
-}
+};
 
-const registerUserAgent = () => {
-    chrome.system.display.getInfo((displayInfo) => {
-        let userAgent = getUserAgent(displayInfo[0].bounds.width, displayInfo[0].bounds.height);
-        let newRules;
-        if (userAgent !== "Default") {
-            newRules = rules_template;
-            newRules[0].action.requestHeaders[0].value = userAgent;
-            console.log("New user agent set: ", userAgent);
-        }
-        chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds: [1],
-            addRules: newRules
-        });
+const registerUserAgent = async () => {
+    let userAgent = getUserAgent(currentDisplay.width, currentDisplay.height);
+    let newRules;
+    if (userAgent !== "Default") {
+        newRules = rules_template;
+        newRules[0].action.requestHeaders[0].value = userAgent;
+        console.log("New user agent set: ", userAgent);
+    }
+    chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: [1],
+        addRules: newRules
     });
 }
 
 chrome.system.display.onDisplayChanged.addListener(() => {
-    registerUserAgent();
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, ([tab]) => {
+        if (chrome.runtime.lastError)
+            console.error(chrome.runtime.lastError);
+        chrome.tabs.sendMessage(tab.id, { action: "getDisplayInfo" }, response => {
+            if (!!response && !!response.displayInfo) {
+                currentDisplay = response.displayInfo;
+                registerUserAgent();
+            }
+        });
+    });
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -73,10 +82,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         saveConfigurations(request.configs).then(() => registerUserAgent());
     } else if (request.action === "load") {
         loadConfigurations().then((res) => sendResponse({configs: res.configs}));
+    } else if (request.action === "updateDisplayInfo") {
+        if (request.displayInfo.height != currentDisplay.height || request.displayInfo.width != currentDisplay.width) {
+            currentDisplay = request.displayInfo;
+            registerUserAgent();
+        }
     }
     return true;
 });
 
 registerUserAgent();
-
-
