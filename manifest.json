@@ -1,0 +1,24 @@
+{
+    "name": "Adaptive User Agent Switcher",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "permissions": [
+        "declarativeNetRequest",
+        "system.display",
+        "storage",
+        "scripting"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "description": "Switch user agent automatically on display resolution change.",
+    "action": {
+        "default_popup": "setting.html"
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
+}
