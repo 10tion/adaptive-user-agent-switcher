@@ -10,11 +10,9 @@ const saveConfigurations = (configs) => {
     });
 }
 
-// var defaultUserAgent = navigator.userAgent;
-
 var resUAMap = new Map();
 
-let rules = [
+let rules_template = [
     {
         id: 1,
         priority: 1,
@@ -55,7 +53,7 @@ const registerUserAgent = () => {
         let userAgent = getUserAgent(displayInfo[0].bounds.width, displayInfo[0].bounds.height);
         let newRules;
         if (userAgent !== "Default") {
-            newRules = rules;
+            newRules = rules_template;
             newRules[0].action.requestHeaders[0].value = userAgent;
             console.log("New user agent set: ", userAgent);
         }
@@ -66,7 +64,6 @@ const registerUserAgent = () => {
     });
 }
 
-// 
 chrome.system.display.onDisplayChanged.addListener(() => {
     registerUserAgent();
 })

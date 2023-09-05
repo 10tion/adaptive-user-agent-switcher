@@ -8,7 +8,7 @@ const contentLoadConfigurations = () => {
 
 const contentSaveConfigurations = () => {
     chrome.runtime.sendMessage({ action: "save", configs: getPageData()}, response => {
-        console.log("New configurations saved.")
+        // TODO: display service-worker response.
     });
 }
 
