@@ -50,7 +50,7 @@ const getUserAgent = (width, height) => {
     }
 };
 
-const registerUserAgent = async () => {
+const registerUserAgent = () => {
     let userAgent = getUserAgent(currentDisplay.width, currentDisplay.height);
     let newRules;
     if (userAgent !== "Default") {
