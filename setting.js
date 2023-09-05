@@ -13,8 +13,8 @@ const contentSaveConfigurations = () => {
 }
 
 const deleteCurrentRow = (event) => {
-    var td = event.target.parentNode;
-    var tr = td.parentNode;
+    let td = event.target.parentNode;
+    let tr = td.parentNode;
     tr.parentNode.removeChild(tr);
 }
 

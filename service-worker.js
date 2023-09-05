@@ -10,7 +10,7 @@ const saveConfigurations = (configs) => {
     });
 }
 
-var resUAMap = new Map();
+let resUAMap = new Map();
 
 let rules_template = [
     {
