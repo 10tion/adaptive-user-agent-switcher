@@ -5,7 +5,6 @@ const loadConfigurations = () => {
 const saveConfigurations = (configs) => {
     return chrome.storage.local.set({ configs: configs }).then(() => {
         console.log("Configuration saved.");
-        // refresh res-ua map maintained in this worker.
         resUAMap = new Map(Object.entries(configs));
     });
 }
@@ -64,6 +63,7 @@ const registerUserAgent = () => {
     });
 }
 
+// Reset UA on any display changes.
 chrome.system.display.onDisplayChanged.addListener(() => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, ([tab]) => {
         if (chrome.runtime.lastError)
@@ -77,6 +77,7 @@ chrome.system.display.onDisplayChanged.addListener(() => {
     });
 })
 
+// Communicate with content script and settings.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "save") {
         saveConfigurations(request.configs).then(() => registerUserAgent());
