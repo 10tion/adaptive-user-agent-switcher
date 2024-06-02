@@ -37,6 +37,7 @@ let rules_template = [
 loadConfigurations().then((result) => {
     if (!!result.configs) {
         resUAMap = new Map(Object.entries(result.configs));
+        registerUserAgent();
     }
 });
 
